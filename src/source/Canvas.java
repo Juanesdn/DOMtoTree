@@ -1,67 +1,57 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package source;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import javax.swing.JPanel;
 
-/**
- *
- * @author Juanes
- */
-public class Canvas extends javax.swing.JPanel {
 
-    
-    public Canvas() {
-        initComponents();
+public class Canvas extends JPanel {
+
+    private int radio = 20;
+    private int verticalSpace = 50;
+    private Tree tree;
+    private HashMap<Node,Point> coordinates;
+
+
+    public Canvas(Tree tree) {
+        this.tree = tree;
+        this.coordinates = new HashMap<>();
+        setPreferredSize(new Dimension(2000, 900));
     }
-    
+
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        
-        Node root = main.tree.getRoot();
-                
-        paintTree(g, root);
-        
+
+        paintTree(g, main.tree.getRoot(), getWidth()/2 - 200, 30, getWidth()/5);
+
     }
-    
-    public void paintTree(Graphics g, Node root){
-        g.drawString(root.getData(), root.getX(), root.getY());
-        for (int i = 0; i < root.getChildrenQuantity(); i++) {
-            paintTree(g, root.getChildren().get(i));
+
+    public void paintTree(Graphics g, Node root, int x, int y, int horizontalSpace){
+        g.drawOval(x-radio,y-radio,2*radio,2*radio);
+        String [] text = root.getData().split("/");
+        g.drawString(text[0] + "", x - 8, y + 4);
+
+        ArrayList<Node> children = root.getChildren();
+
+        coordinates.put(root, new Point(x, y));
+
+        for (Node child : children) {
+            Point point = coordinates.get(tree.getParent(child));
+            drawLine(g, x-horizontalSpace, y+verticalSpace, point.x, point.y);
+            paintTree(g,child, x-horizontalSpace, y+verticalSpace, horizontalSpace/children.size() + radio);
+            x += horizontalSpace;
         }
     }
 
-    
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    public void drawLine(Graphics g, int x1, int y1, int x2, int y2){
 
-        draw_btn = new javax.swing.JButton();
+        double d = Math.sqrt(verticalSpace*verticalSpace+(x2-x1)*(x2-x1));
+        int pos_x1 = (int)(x1-radio*(x1-x2)/d);
+        int pos_y1 = (int)(y1-radio*(y1-y2)/d);
+        int pos_x2 = (int)(x2+radio*(x1-x2)/d);
+        int pos_y2 = (int)(y2+radio*(y1-y2)/d);
 
-        setBackground(new java.awt.Color(255, 255, 255));
-        setPreferredSize(new java.awt.Dimension(658, 512));
-        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        draw_btn.setText("jButton1");
-        draw_btn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                draw_btnActionPerformed(evt);
-            }
-        });
-        add(draw_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 30, -1, -1));
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void draw_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_draw_btnActionPerformed
-        repaint();
-    }//GEN-LAST:event_draw_btnActionPerformed
-
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton draw_btn;
-    // End of variables declaration//GEN-END:variables
+        g.drawLine(pos_x1,pos_y1,pos_x2,pos_y2);
+    }
 }

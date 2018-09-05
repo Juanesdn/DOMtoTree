@@ -1,19 +1,24 @@
 package source;
 
+
 import java.util.ArrayList;
 
 public class Node {
     private String data;
+    private Node parent;
     private ArrayList<Node> children;
     private int childrenQuantity;
-    private int x;
-    private int y;
-    
-    public Node(String data){
+
+    public Node(){
+
+    }
+
+    public Node(String data, Node parent){
         this.data = data;
+        this.parent = parent;
         this.childrenQuantity = 0;
         this.children = new ArrayList<>();
-    }   
+    }
 
     public String getData() {
         return data;
@@ -40,23 +45,15 @@ public class Node {
         this.childrenQuantity = childrenQuantity;
     }
 
-    public int getX() {
-        return x;
+    public Node getParent() {
+        return parent;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setParent(Node parent) {
+        this.parent = parent;
     }
 
-    public int getY() {
-        return y;
-    }
 
-    public void setY(int y) {
-        this.y = y;
-    }
-    
-    
-    
-    
+
+
 }
